@@ -26,7 +26,7 @@ public class GraphingScene extends JPanel implements Runnable {
 	private Dimension dimension;
 	private DataModel dt;
 	private boolean isRunning = false;
-	private final long SLEEP = 2;
+	private final long SLEEP = 3;
 	private InformationPanel informationPanel;
 	private boolean mouseClicked = false;
 	private double xPrecedent, yPrecedent, dx, dy;
