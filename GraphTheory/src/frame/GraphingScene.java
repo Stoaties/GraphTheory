@@ -15,11 +15,13 @@ import java.awt.event.MouseMotionAdapter;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import frame.panel.EscapePanel;
 import frame.panel.InformationPanel;
 import object.Node;
 import object.Path;
 import save.DataModel;
 import util.Vector;
+import java.awt.FlowLayout;
 
 public class GraphingScene extends JPanel implements Runnable {
 	private Thread th;
@@ -35,6 +37,7 @@ public class GraphingScene extends JPanel implements Runnable {
 	private boolean mouseClicked = false;
 	private boolean newPath = false;
 	private boolean firstNodeSelected = false;
+	private EscapePanel escapePanel;
 
 	public GraphingScene(Dimension dimension) {
 		setBounds(0,0,(int)dimension.getWidth(),(int)dimension.getHeight());
@@ -73,11 +76,13 @@ public class GraphingScene extends JPanel implements Runnable {
 					tempPath.setNodeTwo(selectedNode);
 					firstNodeSelected = false;
 					dt.addPath(tempPath);
+					selectedNode.addPath(tempPath);
 				}
 				
 				if(nodeSelected && newPath) {
 					tempPath = new Path();
 					tempPath.setNodes(selectedNode, new Node(arg0.getX(),arg0.getY()));
+					selectedNode.addPath(tempPath);
 					firstNodeSelected = true;
 					newPath = false;
 				}
@@ -124,6 +129,15 @@ public class GraphingScene extends JPanel implements Runnable {
 				case KeyEvent.VK_P:
 					newPath = true;
 					break;
+				case KeyEvent.VK_ESCAPE:
+					if(escapePanel.isVisible()) {
+						escapePanel.setVisible(false);
+						escapePanel.setIsVisible(false);
+					} else {
+						escapePanel.setVisible(true);
+						escapePanel.setIsVisible(true);
+					}
+					break;
 				}
 			}
 
@@ -136,6 +150,8 @@ public class GraphingScene extends JPanel implements Runnable {
 		informationPanel = new InformationPanel();
 		informationPanel.setBounds(10, 11, 81, 59);
 		add(informationPanel);
+		informationPanel.setLayout(null);
+		
 		
 		JLabel newLbl = new JLabel("N = New Node");
 		newLbl.setBounds(10, getHeight()-115, 200, 14);
@@ -154,6 +170,12 @@ public class GraphingScene extends JPanel implements Runnable {
 		JLabel infoLbl = new JLabel("Left Click = Node's info");
 		infoLbl.setBounds(10, getHeight()-55, 200, 14);
 		add(infoLbl);
+		
+		escapePanel = new EscapePanel();
+		escapePanel.setBounds(getWidth()/2 - 190/2, getHeight()/2 - 230/2, 190, 230);
+		add(escapePanel);
+		escapePanel.setLayout(null);
+		escapePanel.setVisible(false);
 		informationPanel.setVisible(false);
 
 	}
