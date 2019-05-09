@@ -9,7 +9,7 @@ import java.util.Vector;
 import javax.swing.JLabel;
 
 public class Node extends Object{
-	private final double radius = 20;
+	private final int radius = 20;
 	private final Color color = Color.cyan;
 	private static int counter = 0;
 	public int nodeNum = counter;
@@ -18,15 +18,25 @@ public class Node extends Object{
 		
 	}
 	
+	public Node(Node selectedNode) {
+		this.position = selectedNode.getPostion();
+	}
+	
 	public Node(Point p) {
-		position.setPosition(p.getX()-radius/2, p.getY()-radius/2);;
+		position.setPosition(p.getX(), p.getY());
 		shape = new Ellipse2D.Double(position.getX(), position.getY(), radius, radius);
 		counter++;
+	}
+	
+	public Node(int x, int y) {
+		this.position.setX(x);
+		this.position.setX(y);
 	}
 	
 	public void draw(Graphics2D g2d) {
 		g2d.setColor(color);
 		g2d.fill(shape);
-		shape = new Ellipse2D.Double(position.getX(), position.getY(), radius, radius);
+		shape = new Ellipse2D.Double(position.getX()-radius/2, position.getY()-radius/2, radius, radius);
 	}
+	
 }

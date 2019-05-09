@@ -8,18 +8,18 @@ import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import frame.panel.InformationPanel;
 import object.Node;
+import object.Path;
 import save.DataModel;
 import util.Vector;
-
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import javax.swing.JLabel;
 
 public class GraphingScene extends JPanel implements Runnable {
 	private Thread th;
@@ -28,10 +28,13 @@ public class GraphingScene extends JPanel implements Runnable {
 	private boolean isRunning = false;
 	private final long SLEEP = 3;
 	private InformationPanel informationPanel;
-	private boolean mouseClicked = false;
 	private double xPrecedent, yPrecedent, dx, dy;
 	private Node selectedNode = new Node();
+	private Path tempPath;
 	private boolean nodeSelected = false;
+	private boolean mouseClicked = false;
+	private boolean newPath = false;
+	private boolean firstNodeSelected = false;
 
 	public GraphingScene(Dimension dimension) {
 		setBounds(0,0,(int)dimension.getWidth(),(int)dimension.getHeight());
@@ -66,6 +69,19 @@ public class GraphingScene extends JPanel implements Runnable {
 					informationPanel.setVisible(false);
 				}
 				
+				if(firstNodeSelected) {
+					tempPath.setNodeTwo(selectedNode);
+					firstNodeSelected = false;
+					dt.addPath(tempPath);
+				}
+				
+				if(nodeSelected && newPath) {
+					tempPath = new Path();
+					tempPath.setNodes(selectedNode, new Node(arg0.getX(),arg0.getY()));
+					firstNodeSelected = true;
+					newPath = false;
+				}
+				
 				
 				
 			}
@@ -97,13 +113,16 @@ public class GraphingScene extends JPanel implements Runnable {
 				int keyCode = arg0.getKeyCode();
 				Point pos = MouseInfo.getPointerInfo().getLocation();
 				pos.setLocation(pos.getX() - getLocationOnScreen().getX(), pos.getY() - getLocationOnScreen().getY());
-
+				
 				switch (keyCode) {
 				case KeyEvent.VK_N:
 					dt.addNode(new Node(pos));
 					break;
 				case KeyEvent.VK_D:
 					dt.deleteNode(pos);
+					break;
+				case KeyEvent.VK_P:
+					newPath = true;
 					break;
 				}
 			}
@@ -143,9 +162,13 @@ public class GraphingScene extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		for(Path path : dt.getPaths()) {
+			path.draw(g2d);
+		}
 		for (Node node : dt.getNodes()) {
 			node.draw(g2d);
 		}
+		
 		informationPanel.update(selectedNode);
 	}
 
