@@ -52,6 +52,14 @@ public class GraphingScene extends JPanel implements Runnable {
 					selectedNode.translate(dx,dy);
 				}
 				
+			
+				
+			}
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if(firstNodeSelected) {
+					tempPath.getNodes()[1].setPosition(new Vector(e.getX(),e.getY()));
+				}
 			}
 		});
 		addMouseListener(new MouseAdapter() {
@@ -59,10 +67,13 @@ public class GraphingScene extends JPanel implements Runnable {
 			public void mouseClicked(MouseEvent arg0) {
 				nodeSelected = false;
 				selectedNode = new Node();
-				for (Node node : dt.getNodes()) {
+				for (Node node : dt.getNodes()) { //Figure out if user clicked on a node with mouse position
 					if (node.isInside(arg0.getPoint())) {
 						nodeSelected = true;
 						selectedNode = node;
+						node.setIsSelected(true);
+					} else {
+						node.setIsSelected(false);
 					}
 				}
 				if (nodeSelected && arg0.getButton() == MouseEvent.BUTTON1) { //Left click
@@ -72,16 +83,18 @@ public class GraphingScene extends JPanel implements Runnable {
 					informationPanel.setVisible(false);
 				}
 				
-				if(firstNodeSelected) {
+				if(firstNodeSelected) { //After second node is selected add it to the memory
 					tempPath.setNodeTwo(selectedNode);
 					firstNodeSelected = false;
 					dt.addPath(tempPath);
 					selectedNode.addPath(tempPath);
+					tempPath = null;
 				}
 				
-				if(nodeSelected && newPath) {
+				if(nodeSelected && newPath) { //First node selection when creating a path
 					tempPath = new Path();
 					tempPath.setNodes(selectedNode, new Node(arg0.getX(),arg0.getY()));
+					tempPath.getNodes()[1].setPosition(new Vector(arg0.getX(),arg0.getY()));
 					selectedNode.addPath(tempPath);
 					firstNodeSelected = true;
 					newPath = false;
@@ -148,7 +161,7 @@ public class GraphingScene extends JPanel implements Runnable {
 		setLayout(null);
 
 		informationPanel = new InformationPanel();
-		informationPanel.setBounds(10, 11, 81, 59);
+		informationPanel.setBounds(10, 10, 81, 80);
 		add(informationPanel);
 		informationPanel.setLayout(null);
 		
@@ -184,6 +197,9 @@ public class GraphingScene extends JPanel implements Runnable {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		if(tempPath != null) {
+			tempPath.draw(g2d);
+		}
 		for(Path path : dt.getPaths()) {
 			path.draw(g2d);
 		}
