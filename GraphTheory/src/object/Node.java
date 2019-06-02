@@ -5,9 +5,10 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Node extends Object{
+public class Node extends Object implements Serializable{
 	private final int radius = 20;
 	private final Color color = Color.cyan;
 	private static int counter = 0;

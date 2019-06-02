@@ -7,8 +7,9 @@ import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.io.Serializable;
 
-public class Path extends Object{
+public class Path extends Object implements Serializable{
 	private Node[] extremities = new Node[2];
 	private Color color = Color.GRAY;
 	private double weight;
@@ -49,5 +50,13 @@ public class Path extends Object{
 	public void setNodes(Node node, Node node2) {
 		extremities[0] = node;
 		extremities[1] = node2;
+	}
+	
+	public double getWeight() {
+		return weight;
+	}
+	
+	public void setWeight(double weight) {
+		this.weight = weight;
 	}
 }

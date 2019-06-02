@@ -8,6 +8,7 @@ import util.Vector;
 public class Object {
 	protected Vector position = new Vector();
 	protected Shape shape;
+	protected String name = "No name";
 	
 	public boolean isInside(Point e){
 		if(shape.contains(e.getX(), e.getY())) 
@@ -25,5 +26,13 @@ public class Object {
 	
 	public void translate(double dx,double dy) {
 		position.translate(dx,dy);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 }

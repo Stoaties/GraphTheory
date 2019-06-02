@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -17,16 +18,20 @@ import javax.swing.JPanel;
 
 import frame.panel.EscapePanel;
 import frame.panel.InformationPanel;
+import frame.panel.LoadPanel;
+import frame.panel.SavePanel;
+import listener.EscapePanelListener;
 import object.Node;
 import object.Path;
 import save.DataModel;
+import save.Save;
 import util.Vector;
-import java.awt.FlowLayout;
 
 public class GraphingScene extends JPanel implements Runnable {
 	private Thread th;
 	private Dimension dimension;
-	private DataModel dt;
+	private Save save = new Save();
+	private DataModel dt = new DataModel();
 	private boolean isRunning = false;
 	private final long SLEEP = 3;
 	private InformationPanel informationPanel;
@@ -38,6 +43,8 @@ public class GraphingScene extends JPanel implements Runnable {
 	private boolean newPath = false;
 	private boolean firstNodeSelected = false;
 	private EscapePanel escapePanel;
+	private LoadPanel loadPanel;
+	private SavePanel savePanel;
 
 	public GraphingScene(Dimension dimension) {
 		setBounds(0,0,(int)dimension.getWidth(),(int)dimension.getHeight());
@@ -83,7 +90,7 @@ public class GraphingScene extends JPanel implements Runnable {
 					informationPanel.setVisible(false);
 				}
 				
-				if(firstNodeSelected) { //After second node is selected add it to the memory
+				if(firstNodeSelected && nodeSelected) { //After second node is selected add it to the memory
 					tempPath.setNodeTwo(selectedNode);
 					firstNodeSelected = false;
 					dt.addPath(tempPath);
@@ -161,7 +168,7 @@ public class GraphingScene extends JPanel implements Runnable {
 		setLayout(null);
 
 		informationPanel = new InformationPanel();
-		informationPanel.setBounds(10, 10, 81, 80);
+		informationPanel.setBounds(10, 10, 125, 107);
 		add(informationPanel);
 		informationPanel.setLayout(null);
 		
@@ -185,18 +192,51 @@ public class GraphingScene extends JPanel implements Runnable {
 		add(infoLbl);
 		
 		escapePanel = new EscapePanel();
+		escapePanel.addEscapePanelListener(new EscapePanelListener() {
+			public void load() {
+				escapePanel.setVisible(false);
+				escapePanel.setIsVisible(false);
+				loadPanel.setVisible(true);
+				loadPanel.updateCombo();
+			}
+
+			@Override
+			public void save() {
+				escapePanel.setVisible(false);
+				escapePanel.setIsVisible(false);
+				savePanel.setVisible(true);
+			}
+		});
 		escapePanel.setBounds(getWidth()/2 - 190/2, getHeight()/2 - 230/2, 190, 230);
 		add(escapePanel);
 		escapePanel.setLayout(null);
 		escapePanel.setVisible(false);
 		informationPanel.setVisible(false);
+		
+		loadPanel = new LoadPanel();
+		loadPanel.setBounds(getWidth()/2 - 176/2, getHeight()/2-80/2,176,80);
+		add(loadPanel);
+		loadPanel.setLayout(null);
+		loadPanel.setVisible(false);
+		loadPanel.setSave(save);
+		loadPanel.setDt(dt);
+		loadPanel.updateCombo();
+		
+		savePanel = new SavePanel();
+		savePanel.setBounds(getWidth()/2 - 150/2, getHeight()/2-80/2,150,85);
+		add(savePanel);
+		savePanel.setLayout(null);
+		savePanel.setVisible(false);
+		savePanel.setSave(save);
+		savePanel.setDt(dt);
 
 	}
 
-	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2d.setRenderingHints(rh);
 		if(tempPath != null) {
 			tempPath.draw(g2d);
 		}
@@ -238,5 +278,9 @@ public class GraphingScene extends JPanel implements Runnable {
 
 	public void setDt(DataModel dt) {
 		this.dt = dt;
+	}
+	
+	public void setSave(Save save) {
+		this.save = save;
 	}
 }

@@ -8,9 +8,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import save.DataModel;
+import save.Save;
 
 public class Aapplication extends JFrame {
 
+	private Save save = new Save();
 	private JPanel contentPane;
 	private GraphingScene graphingScene;
 	private DataModel dt = new DataModel();
@@ -35,6 +37,10 @@ public class Aapplication extends JFrame {
 	 * Create the frame.
 	 */
 	public Aapplication() {
+		
+		
+		save.loadModels();
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1245, 741);
 		contentPane = new JPanel();
@@ -48,6 +54,7 @@ public class Aapplication extends JFrame {
 		graphingScene.setFocusable(true); 
 		graphingScene.requestFocus();
 		graphingScene.start();
+		graphingScene.setSave(save);
 		contentPane.add(graphingScene);
 	}
 }

@@ -1,13 +1,21 @@
 package frame.panel;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import listener.EscapePanelListener;
+import save.DataModel;
+import save.Save;
 
 public class EscapePanel extends JPanel {
 	private boolean isVisible = false;
+	private DataModel dataModel = new DataModel();
+	private ArrayList<EscapePanelListener> listeEcouteurs = new ArrayList<EscapePanelListener>();
 	
 	public EscapePanel() {
 		setLayout(null);
@@ -18,6 +26,14 @@ public class EscapePanel extends JPanel {
 		add(lblMenu);
 		
 		JLabel lblNewLabel = new JLabel("Save");
+		lblNewLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				leverEvenSave();
+				setVisible(false);
+				isVisible = false;
+			}
+		});
 		lblNewLabel.setFont(new Font("Impact", Font.PLAIN, 15));
 		lblNewLabel.setBounds(79, 61, 31, 14);
 		add(lblNewLabel);
@@ -34,6 +50,14 @@ public class EscapePanel extends JPanel {
 		add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_2 = new JLabel("Load");
+		lblNewLabel_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				leverEvenLoad();
+				setVisible(false);
+				isVisible = false;
+			}
+		});
 		lblNewLabel_2.setFont(new Font("Impact", Font.PLAIN, 15));
 		lblNewLabel_2.setBounds(79, 86, 31, 14);
 		add(lblNewLabel_2);
@@ -49,7 +73,8 @@ public class EscapePanel extends JPanel {
 		lblReturn.setFont(new Font("Impact", Font.PLAIN, 15));
 		lblReturn.setBounds(74, 180, 42, 14);
 		add(lblReturn);
-
+		
+	
 	}
 	
 	public boolean isVisible() {
@@ -60,4 +85,23 @@ public class EscapePanel extends JPanel {
 		this.isVisible = isVisible;
 	}
 	
+	public void addEscapePanelListener(EscapePanelListener ecouteur) {
+		listeEcouteurs.add(ecouteur);
+	}
+	
+	private void leverEvenLoad() {
+		for(EscapePanelListener ecouteur : listeEcouteurs) {
+			ecouteur.load();
+		}
+	}
+	
+	private void leverEvenSave() {
+		for(EscapePanelListener ecouteur: listeEcouteurs) {
+			ecouteur.save();
+		}
+	}
+	
+	
 }
+
+
