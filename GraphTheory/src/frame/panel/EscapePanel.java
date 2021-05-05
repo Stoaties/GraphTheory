@@ -8,14 +8,18 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import listener.EscapePanelListener;
+//import listener.EscapePanelListener;
 import save.DataModel;
-import save.Save;
+import javax.swing.JButton;
+import java.awt.Component;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+//import save.Save;
 
 public class EscapePanel extends JPanel {
 	private boolean isVisible = false;
 	private DataModel dataModel = new DataModel();
-	private ArrayList<EscapePanelListener> listeEcouteurs = new ArrayList<EscapePanelListener>();
+	//private ArrayList<EscapePanelListener> listeEcouteurs = new ArrayList<EscapePanelListener>();
 	
 	public EscapePanel() {
 		setLayout(null);
@@ -38,17 +42,6 @@ public class EscapePanel extends JPanel {
 		lblNewLabel.setBounds(79, 61, 31, 14);
 		add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Exit");
-		lblNewLabel_1.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				System.exit(0);;
-			}
-		});
-		lblNewLabel_1.setFont(new Font("Impact", Font.PLAIN, 15));
-		lblNewLabel_1.setBounds(84, 205, 22, 14);
-		add(lblNewLabel_1);
-		
 		JLabel lblNewLabel_2 = new JLabel("Load");
 		lblNewLabel_2.addMouseListener(new MouseAdapter() {
 			@Override
@@ -62,17 +55,27 @@ public class EscapePanel extends JPanel {
 		lblNewLabel_2.setBounds(79, 86, 31, 14);
 		add(lblNewLabel_2);
 		
-		JLabel lblReturn = new JLabel("Return");
-		lblReturn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setVisible(false);
-				isVisible = false;
+		JButton exitButton = new JButton("Exit");
+		exitButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(1);
 			}
 		});
-		lblReturn.setFont(new Font("Impact", Font.PLAIN, 15));
-		lblReturn.setBounds(74, 180, 42, 14);
-		add(lblReturn);
+		exitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		exitButton.setContentAreaFilled(false);
+		exitButton.setBounds(50, 196, 89, 23);
+		add(exitButton);
+		
+		JButton returnButton = new JButton("Return");
+		returnButton.setContentAreaFilled(false);
+		returnButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(false);
+				isVisible=false;
+			}
+		});
+		returnButton.setBounds(50, 169, 89, 23);
+		add(returnButton);
 		
 	
 	}
@@ -85,23 +88,21 @@ public class EscapePanel extends JPanel {
 		this.isVisible = isVisible;
 	}
 	
-	public void addEscapePanelListener(EscapePanelListener ecouteur) {
-		listeEcouteurs.add(ecouteur);
-	}
+	//public void addEscapePanelListener(EscapePanelListener ecouteur) {
+	//	listeEcouteurs.add(ecouteur);
+	//}
 	
 	private void leverEvenLoad() {
-		for(EscapePanelListener ecouteur : listeEcouteurs) {
-			ecouteur.load();
-		}
+		//for(EscapePanelListener ecouteur : listeEcouteurs) {
+		//	ecouteur.load();
+		//}
 	}
 	
 	private void leverEvenSave() {
-		for(EscapePanelListener ecouteur: listeEcouteurs) {
-			ecouteur.save();
-		}
+		//for(EscapePanelListener ecouteur: listeEcouteurs) {
+		//	ecouteur.save();
+		//}
 	}
-	
-	
 }
 
 

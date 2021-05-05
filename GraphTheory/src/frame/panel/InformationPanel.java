@@ -50,12 +50,7 @@ public class InformationPanel extends JPanel {
 		btnNewButton.setBounds(84, 82, 43, 23);
 		add(btnNewButton);
 	
-		try {
-		    Image img = ImageIO.read(getClass().getResource("..\\res\\settings.png"));
-		    btnNewButton.setIcon(new ImageIcon(img));
-		  } catch (Exception ex) {
-		    ex.printStackTrace();
-		  }
+
 		
 		
 		

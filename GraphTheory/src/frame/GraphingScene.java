@@ -18,19 +18,19 @@ import javax.swing.JPanel;
 
 import frame.panel.EscapePanel;
 import frame.panel.InformationPanel;
-import frame.panel.LoadPanel;
-import frame.panel.SavePanel;
-import listener.EscapePanelListener;
+//import frame.panel.LoadPanel;
+//import frame.panel.SavePanel;
+//import listener.EscapePanelListener;
 import object.Node;
 import object.Path;
 import save.DataModel;
-import save.Save;
+//import save.Save;
 import util.Vector;
 
 public class GraphingScene extends JPanel implements Runnable {
 	private Thread th;
 	private Dimension dimension;
-	private Save save = new Save();
+	//private Save save = new Save();
 	private DataModel dt = new DataModel();
 	private boolean isRunning = false;
 	private final long SLEEP = 3;
@@ -43,8 +43,8 @@ public class GraphingScene extends JPanel implements Runnable {
 	private boolean newPath = false;
 	private boolean firstNodeSelected = false;
 	private EscapePanel escapePanel;
-	private LoadPanel loadPanel;
-	private SavePanel savePanel;
+	//private LoadPanel loadPanel;
+	//private SavePanel savePanel;
 
 	public GraphingScene(Dimension dimension) {
 		setBounds(0,0,(int)dimension.getWidth(),(int)dimension.getHeight());
@@ -52,7 +52,14 @@ public class GraphingScene extends JPanel implements Runnable {
 			@Override
 			public void mouseDragged(MouseEvent arg0) {
 				if(nodeSelected && mouseClicked) {
+					
+					
 					dx = arg0.getX() - xPrecedent;
+					
+					
+					System.out.println(arg0.getX() + " " + xPrecedent +  " " +  dx);
+					//System.out.println("x:" + arg0.getX() + "|" + " y:" + arg0.getY());
+					
 					dy = arg0.getY() - yPrecedent;
 					xPrecedent = arg0.getX();
 					yPrecedent = arg0.getY();
@@ -72,6 +79,8 @@ public class GraphingScene extends JPanel implements Runnable {
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				xPrecedent = arg0.getX();
+				yPrecedent = arg0.getY();
 				nodeSelected = false;
 				selectedNode = new Node();
 				for (Node node : dt.getNodes()) { //Figure out if user clicked on a node with mouse position
@@ -86,6 +95,8 @@ public class GraphingScene extends JPanel implements Runnable {
 				if (nodeSelected && arg0.getButton() == MouseEvent.BUTTON1) { //Left click
 					informationPanel.update(selectedNode);
 					informationPanel.setVisible(true);
+					xPrecedent = arg0.getX();
+					yPrecedent = arg0.getY();
 				} else {
 					informationPanel.setVisible(false);
 				}
@@ -192,27 +203,30 @@ public class GraphingScene extends JPanel implements Runnable {
 		add(infoLbl);
 		
 		escapePanel = new EscapePanel();
+		
+		/**
 		escapePanel.addEscapePanelListener(new EscapePanelListener() {
 			public void load() {
 				escapePanel.setVisible(false);
 				escapePanel.setIsVisible(false);
-				loadPanel.setVisible(true);
-				loadPanel.updateCombo();
+				//loadPanel.setVisible(true);
+				//loadPanel.updateCombo();
 			}
 
 			@Override
 			public void save() {
 				escapePanel.setVisible(false);
 				escapePanel.setIsVisible(false);
-				savePanel.setVisible(true);
+				//savePanel.setVisible(true);
 			}
-		});
+		});**/
+		
 		escapePanel.setBounds(getWidth()/2 - 190/2, getHeight()/2 - 230/2, 190, 230);
 		add(escapePanel);
 		escapePanel.setLayout(null);
 		escapePanel.setVisible(false);
 		informationPanel.setVisible(false);
-		
+		/*
 		loadPanel = new LoadPanel();
 		loadPanel.setBounds(getWidth()/2 - 176/2, getHeight()/2-80/2,176,80);
 		add(loadPanel);
@@ -229,7 +243,7 @@ public class GraphingScene extends JPanel implements Runnable {
 		savePanel.setVisible(false);
 		savePanel.setSave(save);
 		savePanel.setDt(dt);
-
+		 */
 	}
 
 	public void paintComponent(Graphics g) {
@@ -280,7 +294,7 @@ public class GraphingScene extends JPanel implements Runnable {
 		this.dt = dt;
 	}
 	
-	public void setSave(Save save) {
-		this.save = save;
-	}
+	//public void setSave(Save save) {
+	//	this.save = save;
+	//}
 }

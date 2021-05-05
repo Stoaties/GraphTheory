@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Node extends Object implements Serializable{
 	private final int radius = 20;
-	private final Color color = Color.cyan;
+	private final Color color = Color.red;
 	private static int counter = 0;
 	private ArrayList<Path> paths = new ArrayList<Path>();
 	private boolean isSelected = false;
