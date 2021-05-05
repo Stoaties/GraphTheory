@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import frame.panel.EscapePanel;
 import frame.panel.InformationPanel;
+import util.ModeleAffichage;
 //import frame.panel.LoadPanel;
 //import frame.panel.SavePanel;
 //import listener.EscapePanelListener;
@@ -26,11 +27,21 @@ import object.Path;
 import save.DataModel;
 //import save.Save;
 import util.Vector;
+import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.awt.event.MouseWheelEvent;
 
 public class GraphingScene extends JPanel implements Runnable {
 	private Thread th;
 	private Dimension dimension;
-	//private Save save = new Save();
+	private ModeleAffichage ma;
+	private AffineTransform at;
+	private Point2D centre;
+	private double largeurMonde = 100;
+	private double hauteurMonde;
+	private double axeX[] = new double[2];
+	private double axeY[] = new double[2];
 	private DataModel dt = new DataModel();
 	private boolean isRunning = false;
 	private final long SLEEP = 3;
@@ -42,9 +53,11 @@ public class GraphingScene extends JPanel implements Runnable {
 	private boolean mouseClicked = false;
 	private boolean newPath = false;
 	private boolean firstNodeSelected = false;
+	private boolean initMonde = false;
 	private EscapePanel escapePanel;
 	//private LoadPanel loadPanel;
 	//private SavePanel savePanel;
+	//private Save save = new Save();
 
 	public GraphingScene(Dimension dimension) {
 		setBounds(0,0,(int)dimension.getWidth(),(int)dimension.getHeight());
@@ -55,7 +68,6 @@ public class GraphingScene extends JPanel implements Runnable {
 					
 					
 					dx = arg0.getX() - xPrecedent;
-					
 					
 					System.out.println(arg0.getX() + " " + xPrecedent +  " " +  dx);
 					//System.out.println("x:" + arg0.getX() + "|" + " y:" + arg0.getY());
@@ -148,9 +160,10 @@ public class GraphingScene extends JPanel implements Runnable {
 			public void keyPressed(KeyEvent arg0) {
 				int keyCode = arg0.getKeyCode();
 				Point pos = MouseInfo.getPointerInfo().getLocation();
-				pos.setLocation(pos.getX() - getLocationOnScreen().getX(), pos.getY() - getLocationOnScreen().getY());
+				pos.setLocation(ma.pixelEnReelleX(pos.getX()- getLocationOnScreen().getX()) ,ma.pixelEnReelleX(pos.getY()- getLocationOnScreen().getY())  );
 				
-				switch (keyCode) {
+				//pixel to location   
+				switch (keyCode) { 
 				case KeyEvent.VK_N:
 					dt.addNode(new Node(pos));
 					break;
@@ -169,6 +182,14 @@ public class GraphingScene extends JPanel implements Runnable {
 						escapePanel.setIsVisible(true);
 					}
 					break;
+				case KeyEvent.VK_MINUS:
+					zoom(4);
+					System.out.println("TESTETEST");
+					break;
+				case KeyEvent.VK_EQUALS:
+					zoom(-4);
+					System.out.println("YESYESYES");
+					break;
 				}
 			}
 
@@ -179,6 +200,11 @@ public class GraphingScene extends JPanel implements Runnable {
 		setLayout(null);
 
 		informationPanel = new InformationPanel();
+		informationPanel.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				zoom(e.getUnitsToScroll());
+			}
+		});
 		informationPanel.setBounds(10, 10, 125, 107);
 		add(informationPanel);
 		informationPanel.setLayout(null);
@@ -250,15 +276,32 @@ public class GraphingScene extends JPanel implements Runnable {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		if (!initMonde) {
+			initMonde = !initMonde;
+			ma = new ModeleAffichage(getWidth(), getHeight(), largeurMonde);
+			at = ma.getMatMC();
+			centre = new Point2D.Double(ma.getLargUnitesReelles() / 2, ma.getHautUnitesReelles() / 2);
+			at.translate(centre.getX(), centre.getY());
+			//	
+			//at.scale(1, -1);
+			//	
+
+			hauteurMonde = ma.getHautUnitesReelles();
+			axeX[0] = -ma.getLargUnitesReelles() / 2;
+			axeX[1] = ma.getLargUnitesReelles() / 2;
+			axeY[0] = -ma.getHautUnitesReelles() / 2;
+			axeY[1] = ma.getHautUnitesReelles() / 2;
+		}
+		
 		g2d.setRenderingHints(rh);
 		if(tempPath != null) {
-			tempPath.draw(g2d);
+			tempPath.draw(g2d, at);
 		}
 		for(Path path : dt.getPaths()) {
-			path.draw(g2d);
+			path.draw(g2d, at);
 		}
 		for (Node node : dt.getNodes()) {
-			node.draw(g2d);
+			node.draw(g2d, at);
 		}
 		
 		informationPanel.update(selectedNode);
@@ -290,6 +333,18 @@ public class GraphingScene extends JPanel implements Runnable {
 		isRunning = false;
 	}
 
+	private void zoom(int zoomAmount) {
+		axeX[0] -= zoomAmount * largeurMonde * 0.05;
+		axeX[1] += zoomAmount * largeurMonde * 0.05;
+		largeurMonde = axeX[1] - axeX[0];
+		ma = new ModeleAffichage(getWidth(), getHeight(), largeurMonde);
+		hauteurMonde = ma.getHautUnitesReelles();
+		at = ma.getMatMC();
+		at.translate(largeurMonde / 2 + ((axeX[0] + axeX[1]) / 2) * -1,
+				hauteurMonde / 2 + ((axeY[0] + axeY[1]) / 2) * -1);
+	}
+
+	
 	public void setDt(DataModel dt) {
 		this.dt = dt;
 	}

@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
@@ -23,11 +24,11 @@ public class Path extends Object implements Serializable{
 		extremities[1] = n2;
 	}
 	
-	public void draw(Graphics2D g2d) {
+	public void draw(Graphics2D g2d, AffineTransform at) {
 		g2d.setColor(color);
 		Line2D.Double line = new Line2D.Double(extremities[0].getPostion().getX(),extremities[0].getPostion().getY(),extremities[1].getPostion().getX(),extremities[1].getPostion().getY());
 		g2d.setStroke(new BasicStroke(3));
-		g2d.draw(line);
+		g2d.draw(at.createTransformedShape(line));
 		
 	}
 	
